@@ -57,6 +57,7 @@ sudo vim /etc/nginx/sites-available/[적절한파일명].conf # 파일 생성 �
 sudo vim nginx.conf
 
 # nginx.conf 작성
+server {
 location /{
     proxy_pass http://localhost:3000;
   }
@@ -130,7 +131,7 @@ location /{
   client_max_body_size 10M;
   # include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
   # ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
+}
 
 server {
 
@@ -201,7 +202,7 @@ sudo service mysql restart
 
 ```bash
 # Docker 클라이언트와 데이몬 설치
-sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get remove docker docker-ce docker.io containerd runc
 
 sudo apt-get update
 sudo apt-get install \
