@@ -125,7 +125,7 @@ export default {
         this.waitConnect();
       } else {
         this.updateConnected(true);
-        const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
+        const serverURL = `https://almostthere.co.kr:9999/api/websocket`;
         let socket = new SockJS(serverURL);
         this.updateStompClient(Stomp.over(socket));
 
