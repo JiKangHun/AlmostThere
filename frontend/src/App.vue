@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import Stomp from "webstomp-client";
-import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
 import {
   getMostRecentMeeting,
   getRecentPastMeeting,
@@ -110,57 +110,57 @@ export default {
         return diffTime;
       }
     },
-    connectHandler() {
-      const access_token = localStorage.getItem("Authorization");
-      if (access_token) {
-        this.connect();
-      }
-    },
-    // Websocket 연결
-    connect() {
-      if (
-        this.connected ||
-        (this.stompClient && this.stompClient.ws.readyState == 1)
-      ) {
-        this.waitConnect();
-      } else {
-        this.updateConnected(true);
-        const serverURL = `wss://3.34.46.231:9999/api/websocket`;
-        let socket = new SockJS(serverURL);
-        this.updateStompClient(Stomp.over(socket));
+    // connectHandler() {
+    //   const access_token = localStorage.getItem("Authorization");
+    //   if (access_token) {
+    //     this.connect();
+    //   }
+    // },
+    // // Websocket 연결
+    // connect() {
+    //   if (
+    //     this.connected ||
+    //     (this.stompClient && this.stompClient.ws.readyState == 1)
+    //   ) {
+    //     this.waitConnect();
+    //   } else {
+    //     this.updateConnected(true);
+    //     const serverURL = `wss://3.34.46.231:9999/api/websocket`;
+    //     let socket = new SockJS(serverURL);
+    //     this.updateStompClient(Stomp.over(socket));
 
-        this.stompClient.connect(
-          {},
-          () => {
-            // 소켓 연결 성공
+    //     this.stompClient.connect(
+    //       {},
+    //       () => {
+    //         // 소켓 연결 성공
 
-            this.updateConnected(false);
-            this.stompClient.debug = () => {};
-            // GeoLocation - 1초마다 현 위치 얻기
-            this.getGeoLocation();
-            this.startIntervalMemberLocation();
-          },
-          (error) => {
-            // 소켓 연결 실패
-            error;
-            // console.log("소켓 연결 실패", error);
-            this.updateConnected(false);
-            this.connect();
-          }
-        );
-      }
-    },
-    // 소켓 연결 기다리기
-    waitConnect() {
-      setTimeout(() => {
-        if (this.stompClient.ws.readyState == 1) {
-          this.getGeoLocation();
-          this.startIntervalMemberLocation();
-        } else {
-          this.waitConnect();
-        }
-      }, 1);
-    },
+    //         this.updateConnected(false);
+    //         this.stompClient.debug = () => {};
+    //         // GeoLocation - 1초마다 현 위치 얻기
+    //         this.getGeoLocation();
+    //         this.startIntervalMemberLocation();
+    //       },
+    //       (error) => {
+    //         // 소켓 연결 실패
+    //         error;
+    //         // console.log("소켓 연결 실패", error);
+    //         this.updateConnected(false);
+    //         this.connect();
+    //       }
+    //     );
+    //   }
+    // },
+    // // 소켓 연결 기다리기
+    // waitConnect() {
+    //   setTimeout(() => {
+    //     if (this.stompClient.ws.readyState == 1) {
+    //       this.getGeoLocation();
+    //       this.startIntervalMemberLocation();
+    //     } else {
+    //       this.waitConnect();
+    //     }
+    //   }, 1);
+    // },
     startIntervalMemberLocation() {
       this.intervalGeolocation = setInterval(() => {
         this.getGeoLocation();
