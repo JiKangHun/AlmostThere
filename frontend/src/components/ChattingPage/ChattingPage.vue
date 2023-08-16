@@ -232,8 +232,8 @@
 </template>
 
 <script>
-import Stomp from "webstomp-client";
-import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
 import { getChatting, getChattingLog } from "@/api/modules/chatting.js";
 import ChattingHeader from "@/views/Header/ChattingHeader.vue";
 import InfiniteLoading from "vue-infinite-loading";
@@ -359,124 +359,124 @@ export default {
       }
     },
     // 메세지 전송
-    send() {
-      if (this.stompClient && this.stompClient.ws.readyState == 1) {
-        this.stompClient.send(
-          `/message/receive/${this.$route.params.id}`,
-          JSON.stringify({ message: this.message, memberId: this.memberId }),
-          {}
-        );
-      }
-    },
+    // send() {
+    //   if (this.stompClient && this.stompClient.ws.readyState == 1) {
+    //     this.stompClient.send(
+    //       `/message/receive/${this.$route.params.id}`,
+    //       JSON.stringify({ message: this.message, memberId: this.memberId }),
+    //       {}
+    //     );
+    //   }
+    // },
     // 메세지 구독
-    chatSubscribe() {
-      // 일단 끊고
-      this.stompClient.unsubscribe(
-        `chatting-subscribe-${this.$route.params.id}`
-      );
-      this.stompClient.subscribe(
-        `/send/${this.$route.params.id}`,
-        async (res) => {
-          const data = await JSON.parse(res.body);
-          if (data.statusCode == 200) {
-            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-            await this.chatList.push(data.data);
-            // 스크롤 맨 아래로 이동
-            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
-            if (this.memberId == data.data.memberId || this.bottom) {
-              await this.goBottom();
-            } else {
-              this.newMessage = await data.data.message;
-              this.newMessageMemberId = await data.data.memberId;
-              this.snackbar = await true;
-            }
-          }
-        },
-        { id: `chatting-subscribe-${this.$route.params.id}` }
-      );
-    },
+    // chatSubscribe() {
+    //   // 일단 끊고
+    //   this.stompClient.unsubscribe(
+    //     `chatting-subscribe-${this.$route.params.id}`
+    //   );
+    //   this.stompClient.subscribe(
+    //     `/send/${this.$route.params.id}`,
+    //     async (res) => {
+    //       const data = await JSON.parse(res.body);
+    //       if (data.statusCode == 200) {
+    //         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+    //         await this.chatList.push(data.data);
+    //         // 스크롤 맨 아래로 이동
+    //         // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
+    //         if (this.memberId == data.data.memberId || this.bottom) {
+    //           await this.goBottom();
+    //         } else {
+    //           this.newMessage = await data.data.message;
+    //           this.newMessageMemberId = await data.data.memberId;
+    //           this.snackbar = await true;
+    //         }
+    //       }
+    //     },
+    //     { id: `chatting-subscribe-${this.$route.params.id}` }
+    //   );
+    // },
     // 멤버 정보 가져오기 구독
-    getMember() {
-      this.stompClient.subscribe(
-        `/enter/${this.$route.params.id}`,
-        (res) => {
-          const data = JSON.parse(res.body);
-          if (data.statusCode == 200) {
-            this.members[data.data.memberId] = data.data;
-          }
-        },
-        { id: `member-subscribe-${this.$route.params.id}` }
-      );
-    },
+    // getMember() {
+    //   this.stompClient.subscribe(
+    //     `/enter/${this.$route.params.id}`,
+    //     (res) => {
+    //       const data = JSON.parse(res.body);
+    //       if (data.statusCode == 200) {
+    //         this.members[data.data.memberId] = data.data;
+    //       }
+    //     },
+    //     { id: `member-subscribe-${this.$route.params.id}` }
+    //   );
+    // },
     // 소켓 연결 후 동작
-    async connectAction() {
-      await this.chatSubscribe();
-      await this.getMember();
-      this.loading = await false;
-      await document
-        .querySelector(".v-snack__wrapper")
-        .addEventListener("click", this.watchNewMessage);
-      await window.addEventListener("scroll", this.onTheBottom);
-      // await this.goBottom();
-    },
+    // async connectAction() {
+    //   await this.chatSubscribe();
+    //   await this.getMember();
+    //   this.loading = await false;
+    //   await document
+    //     .querySelector(".v-snack__wrapper")
+    //     .addEventListener("click", this.watchNewMessage);
+    //   await window.addEventListener("scroll", this.onTheBottom);
+    //   // await this.goBottom();
+    // },
     // 소켓 연결 기다리기
-    waitConnect() {
-      setTimeout(() => {
-        if (this.stompClient.ws.readyState == 1) {
-          this.connectAction();
-        } else {
-          this.waitConnect();
-        }
-      }, 1);
-    },
+    // waitConnect() {
+    //   setTimeout(() => {
+    //     if (this.stompClient.ws.readyState == 1) {
+    //       this.connectAction();
+    //     } else {
+    //       this.waitConnect();
+    //     }
+    //   }, 1);
+    // },
     // Websocket 연결
-    connect() {
-      // 연결 시도 중거나 이미 연결됐거나
-      if (
-        this.connected ||
-        (this.stompClient && this.stompClient.ws.readyState == 1)
-      ) {
-        this.waitConnect();
-      }
-      // 연결 시도
-      else {
-        this.updateConnected(true);
-        const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
-        let socket = new SockJS(serverURL);
-        this.updateStompClient(Stomp.over(socket));
+    // connect() {
+    //   // 연결 시도 중거나 이미 연결됐거나
+    //   if (
+    //     this.connected ||
+    //     (this.stompClient && this.stompClient.ws.readyState == 1)
+    //   ) {
+    //     this.waitConnect();
+    //   }
+    //   // 연결 시도
+    //   else {
+    //     this.updateConnected(true);
+    //     const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
+    //     let socket = new SockJS(serverURL);
+    //     this.updateStompClient(Stomp.over(socket));
 
-        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-        this.stompClient.connect(
-          {},
-          async (frame) => {
-            frame;
-            // console.log("소켓 연결 성공", frame);
-            this.updateConnected(false);
-            this.connectAction();
-          },
-          (error) => {
-            // console.log("소켓 연결 실패", error);
-            error;
-            // this.$refs.error.openDialog();
-            this.updateConnected(false);
-            this.connect();
-          }
-        );
-      }
-    },
+    //     // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+    //     this.stompClient.connect(
+    //       {},
+    //       async (frame) => {
+    //         frame;
+    //         // console.log("소켓 연결 성공", frame);
+    //         this.updateConnected(false);
+    //         this.connectAction();
+    //       },
+    //       (error) => {
+    //         // console.log("소켓 연결 실패", error);
+    //         error;
+    //         // this.$refs.error.openDialog();
+    //         this.updateConnected(false);
+    //         this.connect();
+    //       }
+    //     );
+    //   }
+    // },
   },
   // 메시지 구독 끊기
-  beforeDestroy() {
-    this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
-    this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
+  // beforeDestroy() {
+  //   this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
+  //   this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
 
-    if (this.loading) {
-      document
-        .querySelector(".v-snack__wrapper")
-        .removeEventListener("click", this.watchNewMessage);
-      window.removeEventListener("scroll", this.onTheBottom);
-    }
-  },
+  //   if (this.loading) {
+  //     document
+  //       .querySelector(".v-snack__wrapper")
+  //       .removeEventListener("click", this.watchNewMessage);
+  //     window.removeEventListener("scroll", this.onTheBottom);
+  //   }
+  // },
 };
 </script>
 

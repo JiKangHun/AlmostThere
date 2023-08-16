@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import Stomp from "webstomp-client";
-import SockJS from "sockjs-client";
+// import Stomp from "webstomp-client";
+// import SockJS from "sockjs-client";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -222,99 +222,99 @@ export default {
       marker.setMap(this.map);
     },
     // 소켓 연결 기다리기
-    waitConnect() {
-      setTimeout(() => {
-        if (this.stompClient.ws.readyState == 1) {
-          this.subscribeLocation();
-          this.startIntervalMemberLocation();
-          this.subscribeChatting();
-        } else {
-          this.waitConnect();
-        }
-      }, 1);
-    },
-    // [@Method] WebSocket 연결
-    connect() {
-      if (
-        this.connected ||
-        (this.stompClient && this.stompClient.ws.readyState == 1)
-      ) {
-        this.waitConnect();
-      } else {
-        this.updateConnected(true);
-        const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
-        let socket = new SockJS(serverURL);
-        // this.stompClient = Stomp.over(socket);
-        this.updateStompClient(Stomp.over(socket));
-        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-        this.stompClient.connect(
-          {},
-          (frame) => {
-            // console.log("소켓 연결 성공", frame);
-            frame;
-            this.updateConnected(false);
+    // waitConnect() {
+    //   setTimeout(() => {
+    //     if (this.stompClient.ws.readyState == 1) {
+    //       this.subscribeLocation();
+    //       this.startIntervalMemberLocation();
+    //       this.subscribeChatting();
+    //     } else {
+    //       this.waitConnect();
+    //     }
+    //   }, 1);
+    // },
+    // // [@Method] WebSocket 연결
+    // connect() {
+    //   if (
+    //     this.connected ||
+    //     (this.stompClient && this.stompClient.ws.readyState == 1)
+    //   ) {
+    //     this.waitConnect();
+    //   } else {
+    //     this.updateConnected(true);
+    //     const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
+    //     let socket = new SockJS(serverURL);
+    //     // this.stompClient = Stomp.over(socket);
+    //     this.updateStompClient(Stomp.over(socket));
+    //     // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+    //     this.stompClient.connect(
+    //       {},
+    //       (frame) => {
+    //         // console.log("소켓 연결 성공", frame);
+    //         frame;
+    //         this.updateConnected(false);
 
-            // 서버의 메시지 전송 endpoint를 구독합니다. (이런형태를 pub sub 구조라고 합니다.)
-            this.subscribeLocation();
+    //         // 서버의 메시지 전송 endpoint를 구독합니다. (이런형태를 pub sub 구조라고 합니다.)
+    //         this.subscribeLocation();
 
-            // 1초마다 해당 모임에 있는 member 좌표 + 채팅 얻기
-            this.startIntervalMemberLocation();
-            this.subscribeChatting();
-          },
-          (error) => {
-            // console.log("소켓 연결 실패", error);
-            error;
-            this.updateConnected(false);
-            this.connect();
-          }
-        );
-      }
-    },
-    subscribeLocation() {
-      this.stompClient.subscribe(
-        `/topic/${this.memberId}`,
-        (res) => {
-          // console.log("구독으로 받은 메시지 입니다.", res.body);
+    //         // 1초마다 해당 모임에 있는 member 좌표 + 채팅 얻기
+    //         this.startIntervalMemberLocation();
+    //         this.subscribeChatting();
+    //       },
+    //       (error) => {
+    //         // console.log("소켓 연결 실패", error);
+    //         error;
+    //         this.updateConnected(false);
+    //         this.connect();
+    //       }
+    //     );
+    //   }
+    // },
+    // subscribeLocation() {
+    //   this.stompClient.subscribe(
+    //     `/topic/${this.memberId}`,
+    //     (res) => {
+    //       // console.log("구독으로 받은 메시지 입니다.", res.body);
 
-          // socket을 통해 받은 message(사용자 좌표) 저장
-          // console.log("before error", JSON.parse(res.body));
-          this.saveMembersLocation(JSON.parse(res.body));
-        },
-        {
-          id: `location-subscribe-${this.$route.params.id}`,
-        }
-      );
-    },
-    subscribeChatting() {
-      this.stompClient.subscribe(
-        `/send/${this.$route.params.id}`,
-        async (res) => {
-          const data = await JSON.parse(res.body);
+    //       // socket을 통해 받은 message(사용자 좌표) 저장
+    //       // console.log("before error", JSON.parse(res.body));
+    //       this.saveMembersLocation(JSON.parse(res.body));
+    //     },
+    //     {
+    //       id: `location-subscribe-${this.$route.params.id}`,
+    //     }
+    //   );
+    // },
+    // subscribeChatting() {
+    //   this.stompClient.subscribe(
+    //     `/send/${this.$route.params.id}`,
+    //     async (res) => {
+    //       const data = await JSON.parse(res.body);
 
-          if (data.statusCode == 200) {
-            this.chatting[String(data.data.memberId)] = data.data.message;
-            this.updateChatOverlay();
-          }
-        },
-        { id: `chatting-subscribe-${this.$route.params.id}` }
-      );
-    },
-    // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
-    startIntervalMemberLocation() {
-      this.sendInterval = setInterval(() => {
-        this.send();
-      }, 1000);
-    },
-    // [@Method] client에서 server로 message 보내기(send) - 해당 모임의 member 객체 얻기
-    send() {
-      // console.log(">> #1 meeting 위치 send 작업", this.meetingId);
-      if (this.stompClient && this.stompClient.connected) {
-        this.stompClient.send(
-          `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
-          {}
-        );
-      }
-    },
+    //       if (data.statusCode == 200) {
+    //         this.chatting[String(data.data.memberId)] = data.data.message;
+    //         this.updateChatOverlay();
+    //       }
+    //     },
+    //     { id: `chatting-subscribe-${this.$route.params.id}` }
+    //   );
+    // },
+    // // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
+    // startIntervalMemberLocation() {
+    //   this.sendInterval = setInterval(() => {
+    //     this.send();
+    //   }, 1000);
+    // },
+    // // [@Method] client에서 server로 message 보내기(send) - 해당 모임의 member 객체 얻기
+    // send() {
+    //   // console.log(">> #1 meeting 위치 send 작업", this.meetingId);
+    //   if (this.stompClient && this.stompClient.connected) {
+    //     this.stompClient.send(
+    //       `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
+    //       {}
+    //     );
+    //   }
+    // },
     // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
     saveMembersLocation(receivedMemberLocations) {
       if (receivedMemberLocations.length == 0) return;
