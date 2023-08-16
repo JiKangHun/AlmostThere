@@ -26,7 +26,7 @@ import { mapActions, mapState } from "vuex";
 import LocationPermissionError from "@/common/component/dialog/LocationPermissionError.vue";
 import LocationError from "@/common/component/dialog/LocationError.vue";
 
-import store from "@/store";
+// import store from "@/store";
 
 export default {
   name: "App",
@@ -167,72 +167,72 @@ export default {
       }, 3000);
     },
     // [@Method] GeoLocation 동작
-    async getGeoLocation() {
-      // 로그인한 member 객체 얻어오기
-      if (this.member == null) {
-        await store.dispatch("memberStore/isLogin");
-      }
+    // async getGeoLocation() {
+    //   // 로그인한 member 객체 얻어오기
+    //   if (this.member == null) {
+    //     await store.dispatch("memberStore/isLogin");
+    //   }
 
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then(async (permissionStatus) => {
-          // i) 위치 권한 허용
-          if (permissionStatus.state == "granted") {
-            navigator.geolocation.getCurrentPosition((position) => {
-              // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-              const member = {
-                memberId: this.member_id,
-                memberNickname: this.member.memberNickname,
-                memberLatLng: [
-                  position.coords.latitude,
-                  position.coords.longitude,
-                ],
-              };
-              // 현 사용자의 위치 저장
-              this.send(member);
-            });
-          }
-          // ii) 위치 권한 요청 prompt가 뜬 경우
-          else if (permissionStatus.state == "prompt") {
-            // - 허용한 경우
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-                const member = {
-                  memberId: this.member_id,
-                  memberNickname: this.member.memberNickname,
-                  memberLatLng: [
-                    position.coords.latitude,
-                    position.coords.longitude,
-                  ],
-                };
-                // 현 사용자의 위치 저장
-                this.send(member);
-              },
-              // - 차단한 경우
-              () => {
-                this.$refs.denied.openDialog();
-                clearInterval(this.intervalGeolocation);
-              }
-            );
-          }
-          // iii) 위치 권한 거부
-          else if (permissionStatus.state == "denied") {
-            this.$refs.denied.openDialog();
-            clearInterval(this.intervalGeolocation);
-          }
-        })
-        .catch(() => {
-          this.$refs.error.openDialog();
-          clearInterval(this.intervalGeolocation);
-        });
-    },
-    send(member) {
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = member;
-        this.stompClient.send("/message/locShare", JSON.stringify(msg), {});
-      }
-    },
+    //   navigator.permissions
+    //     .query({ name: "geolocation" })
+    //     .then(async (permissionStatus) => {
+    //       // i) 위치 권한 허용
+    //       if (permissionStatus.state == "granted") {
+    //         navigator.geolocation.getCurrentPosition((position) => {
+    //           // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+    //           const member = {
+    //             memberId: this.member_id,
+    //             memberNickname: this.member.memberNickname,
+    //             memberLatLng: [
+    //               position.coords.latitude,
+    //               position.coords.longitude,
+    //             ],
+    //           };
+    //           // 현 사용자의 위치 저장
+    //           this.send(member);
+    //         });
+    //       }
+    //       // ii) 위치 권한 요청 prompt가 뜬 경우
+    //       else if (permissionStatus.state == "prompt") {
+    //         // - 허용한 경우
+    //         navigator.geolocation.getCurrentPosition(
+    //           (position) => {
+    //             // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+    //             const member = {
+    //               memberId: this.member_id,
+    //               memberNickname: this.member.memberNickname,
+    //               memberLatLng: [
+    //                 position.coords.latitude,
+    //                 position.coords.longitude,
+    //               ],
+    //             };
+    //             // 현 사용자의 위치 저장
+    //             this.send(member);
+    //           },
+    //           // - 차단한 경우
+    //           () => {
+    //             this.$refs.denied.openDialog();
+    //             clearInterval(this.intervalGeolocation);
+    //           }
+    //         );
+    //       }
+    //       // iii) 위치 권한 거부
+    //       else if (permissionStatus.state == "denied") {
+    //         this.$refs.denied.openDialog();
+    //         clearInterval(this.intervalGeolocation);
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.$refs.error.openDialog();
+    //       clearInterval(this.intervalGeolocation);
+    //     });
+    // },
+    // send(member) {
+    //   if (this.stompClient && this.stompClient.connected) {
+    //     const msg = member;
+    //     this.stompClient.send("/message/locShare", JSON.stringify(msg), {});
+    //   }
+    // },
   },
 };
 </script>

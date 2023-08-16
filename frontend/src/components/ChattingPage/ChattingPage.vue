@@ -352,12 +352,12 @@ export default {
       window.scrollTo(0, document.querySelector("body").scrollHeight);
     },
     // 메세지 보내고, 입력 내용 초기화
-    sendMessage() {
-      if (this.memberId !== "" && this.message !== "") {
-        this.send();
-        this.message = "";
-      }
-    },
+    // sendMessage() {
+    //   if (this.memberId !== "" && this.message !== "") {
+    //     this.send();
+    //     this.message = "";
+    //   }
+    // },
     // 메세지 전송
     // send() {
     //   if (this.stompClient && this.stompClient.ws.readyState == 1) {

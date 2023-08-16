@@ -813,8 +813,8 @@ export default {
   beforeDestroy() {
     // console.log("beforeDestroy 구독 끊기 완료", this.meetingId);
     clearInterval(this.sendInterval);
-    this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
-    this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
+    // this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
+    // this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
   },
 };
 </script>
