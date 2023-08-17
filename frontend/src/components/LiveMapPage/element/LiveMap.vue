@@ -242,7 +242,7 @@ export default {
         this.waitConnect();
       } else {
         this.updateConnected(true);
-        const serverURL = `wss://almostthere.co.kr:9999/api/websocket`;
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
         // this.stompClient = Stomp.over(socket);
         this.updateStompClient(Stomp.over(socket));

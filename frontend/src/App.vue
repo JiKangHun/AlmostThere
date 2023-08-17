@@ -125,7 +125,7 @@ export default {
         this.waitConnect();
       } else {
         this.updateConnected(true);
-        const serverURL = `wss://3.34.46.231:9999/api/websocket`;
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
         this.updateStompClient(Stomp.over(socket));
 
