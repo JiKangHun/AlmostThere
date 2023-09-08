@@ -93,6 +93,7 @@ export default {
         formattedTime.getTime();
 
       // diffTime이 양수인 경우 > 최근 지난 모임 중 3시간 이내인 모임이 있는 지 확인
+      //
       if (diffTime > 0) {
         getRecentPastMeeting().then((res) => {
           if (res != null) {
