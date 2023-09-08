@@ -46,10 +46,6 @@ public class ChattingService {
 
     private final MeetingMemberRepository meetingMemberRepository;
 
-    /**
-     * @param meetingId 미팅ID
-     * @param memberId 멤버ID
-     * **/
     public void isChattingMember(Long meetingId, Long memberId) {
 
         // 해당 채팅방의 멤버가 맞는지 확인
@@ -58,9 +54,6 @@ public class ChattingService {
     }
 
     /**
-     * @param memberId 멤버ID
-     * @param meetingId 모임 ID
-     * @param message 채팅 내용
      * @param now 채팅 전송 시간
      * @return 저장한 채팅 정보를 반환한다.
      * **/
@@ -77,11 +70,8 @@ public class ChattingService {
     }
 
     /**
-     * @return 일정 시간마다 Redis에 저장해 둔 채팅을 MySQL에 저장한다.
+     * 일정 시간마다 Redis에 저장해 둔 채팅을 MySQL에 저장한다.
      * **/
-//    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
-//    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
-//    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Scheduled(fixedDelay = 60000)
     @Transactional
     public void addChattingMysql() {
@@ -120,7 +110,6 @@ public class ChattingService {
     }
 
     /**
-     * @param meetingId 미팅ID
      * @return 미팅 정보를 가져온다.
      * **/
     public ChattingResponseDto getChattingInfo(Long meetingId) {
@@ -144,7 +133,6 @@ public class ChattingService {
     }
 
     /**
-     * @param memberId 멤버ID
      * @return 입장한 멤버의 정보를 조회한다.
      * **/
     public ChattingMemberDto getChattingMember(Long memberId) {
@@ -154,7 +142,6 @@ public class ChattingService {
     }
 
     /**
-     * @param meetingId 미팅ID
      * @param lastNumber 최근 조회 최소 인덱스
      * @return 기록 20개를 조회한다.
      * **/

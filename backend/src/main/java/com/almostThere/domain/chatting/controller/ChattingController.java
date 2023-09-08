@@ -26,7 +26,6 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param meetingId 모임 ID
      * @param chattingRequestDto 채팅 내용 및 작성자
      * @return 보낸 메시지 정보를 반환한다.
      * **/
@@ -35,18 +34,15 @@ public class ChattingController {
     public BaseResponse sendChatting(@DestinationVariable String meetingId, ChattingRequestDto chattingRequestDto) {
 
         String message = chattingRequestDto.getMessage();
-        // 메세지 내용은 최대 255자 이하
+
         if (message.length() <= 255) {
 
-            // 사용자ID 임시값 (Header로 받아오는 거 제대로 되는지 확인 필요)
-//            Long memberId = 1L;
             // 우선 memberId는 프론트에서 받아오는 걸로
             Long memberId = chattingRequestDto.getMemberId();
 
-            // 현재 시간 가져오기
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-            // redis에 저장
+            //Method 명 수정 addChattingRedis -> 더 확실한 메소드 명으로
             ChattingDto chattingDto = chattingService.addChattingRedis(memberId, meetingId, message, now);
 
             // 반환
@@ -63,9 +59,7 @@ public class ChattingController {
     @SendTo("/enter/{meetingId}") // 모임 입장
     public BaseResponse enterMeeting(Long memberId) {
 
-        // 사용자ID
         // 우선 memberId는 프론트에서 받아오는 걸로
-
         // 사용자 프로필, 닉네임 가져오기
         ChattingMemberDto chattingMemberDto = chattingService.getChattingMember(memberId);
         return BaseResponse.success(chattingMemberDto);
@@ -73,16 +67,15 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param meetingId 미팅ID
      * @return 채팅 정보 및 채팅 메시지 최대 30개를 조회한다.
      * **/
     @GetMapping("/chat/{meetingId}")
     public BaseResponse getChattingAll(@PathVariable Long meetingId, Authentication authentication) {
 
-        // 사용자ID
+        // 사용자ID -> Service 로직으로 이동
         Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
 
-        // 해당 채팅방의 멤버가 맞는지 확인
+        // 해당 채팅방의 멤버가 맞는지 확인 -> Service 로직으로 이동
         chattingService.isChattingMember(meetingId, memberId);
 
         // 채팅 관련 정보 가져오기
@@ -96,7 +89,6 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param meetingId 미팅ID
      * @param lastNumber 마지막으로 조회했던 채팅 index
      * @return 채팅 메시지 최대 30개를 조회한다.
      * **/
