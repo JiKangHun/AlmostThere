@@ -260,7 +260,7 @@ export default {
           description:
             "지각 여부에 따라 금액이 달라질 수 있습니다.\n자세한 정산 내역은 링크를 통해 확인해주세요.",
           imageUrl:
-            "https://k8a401.p.ssafy.io/almostthere/images/calculate.jpg",
+            "https://almostthere.co.kr/almostthere/images/calculate.jpg",
           link: {},
         },
         itemContent: {
@@ -297,8 +297,8 @@ export default {
           {
             title: "정산내역 확인하러 가기",
             link: {
-              mobileWebUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
-              webUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
+              mobileWebUrl: `https://almostthere.co.kr/meeting/${this.meetingId}`,
+              webUrl: `https://almostthere.co.kr/meeting/${this.meetingId}`,
             },
           },
         ],

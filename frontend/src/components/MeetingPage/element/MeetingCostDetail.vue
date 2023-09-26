@@ -28,7 +28,7 @@
           <div>
             <img
               class="my-5"
-              :src="`https://k8a401.p.ssafy.io/almostthere/${calculate.fileName}`"
+              :src="`https://almostthere.co.kr/almostthere/${calculate.fileName}`"
               width="100%"
             />
           </div>
