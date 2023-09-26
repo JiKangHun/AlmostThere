@@ -101,7 +101,7 @@ export default {
   methods: {
     copyLink: async function () {
       const roomCode = this.roomCode;
-      const textToCopy = `https://k8a401.p.ssafy.io/entrance/${roomCode}`;
+      const textToCopy = `https://almostthere.co.kr/entrance/${roomCode}`;
       try {
         await navigator.clipboard.writeText(textToCopy);
         // console.log("Text copied to clipboard");
@@ -126,7 +126,7 @@ export default {
           description:
             "호스트가 모임에 초대합니다.\n" +
             "아래 버튼을 통해 초대를 수락하세요! ",
-          imageUrl: "https://k8a401.p.ssafy.io/almostthere/images/home.png",
+          imageUrl: "https://almostthere.co.kr/almostthere/images/home.png",
           link: {
             // mobileWebUrl: "http://localhost:8080",
             // webUrl: "http://localhost:8080",
@@ -153,8 +153,8 @@ export default {
             title: "초대 모임 참여하기",
             link: {
               // 룸코드 props? store로 받아와서 url에 추가하기
-              mobileWebUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
-              webUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
+              mobileWebUrl: `https://almostthere.co.kr/entrance/${roomCode}`,
+              webUrl: `https://almostthere.co.kr/entrance/${roomCode}`,
               // mobileWebUrl: `http://localhost:3000/entrance/${roomCode}`,
               // webUrl: `http://localhost:3000/entrance/${roomCode}`,
             },
